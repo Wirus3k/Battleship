@@ -10,7 +10,7 @@ public class Main {
     static char[][] plane = new char[10][10];
     static Ship[] ships = {new Ship("Aircraft Carrier", 5), new Ship("Battleship", 4),
             new Ship("Submarine", 3), new Ship("Cruiser", 3), new Ship("Destroyer", 2)};
-    public static void emptyPlane() {
+    private static void emptyPlane() {
         for(int i = 0; i < plane.length; i++) {
             for(int j = 0; j < plane[0].length; j++) {
                 plane[i][j] = '~';
@@ -18,7 +18,7 @@ public class Main {
         }
     }
 
-    public static void displayPlane(){
+    private static void displayPlane(){
         for (int i = 0; i <= plane.length; i++) {
             System.out.println();
             for (int j = 0; j <= plane[0].length; j++) {
@@ -68,7 +68,7 @@ public class Main {
         System.out.println();
     }
 
-    public static void changePlane(int[] coordinatesConverter) {
+    private static void changePlane(int[] coordinatesConverter) {
         for(int i = coordinatesConverter[0]; i <= coordinatesConverter[2]; i++) {
             for(int j = coordinatesConverter[1]; j <= coordinatesConverter[3]; j++){
                 plane[i][j] = 'O';
@@ -77,7 +77,7 @@ public class Main {
     }
 
 
-    public static void setShips(){
+    private static void setShips(){
         for (Ship ship : ships) {
             takeCoordinates(ship);
             System.out.println();
@@ -85,17 +85,29 @@ public class Main {
         }
     }
 
-    public static void takeCoordinates(Ship ship) {
+    private static void takeCoordinates(Ship ship) {
         boolean takeCoordinates = true;
         System.out.printf("Enter the coordinates of the %S (%d cells):%n", ship.name, ship.size);
         System.out.println();
         while (takeCoordinates){
-                String[] coordinates = getString().toUpperCase().split(" ");
-                coordinatesConverter(coordinates);
+            String[] coordinates = getString().toUpperCase().split(" ");
 
-            if (rangePossible(ship, coordinatesConverter(coordinates)) && !shipAround(coordinatesConverter(coordinates))) {
-                changePlane(coordinatesConverter(coordinates));
-                takeCoordinates = false;
+            if(coordinates.length == 2){
+                coordinatesConverter(coordinates);
+                if(range(coordinatesConverter(coordinates))) {
+                    if (rangePossible(ship, coordinatesConverter(coordinates)) && !shipAround(coordinatesConverter(coordinates))) {
+                        changePlane(coordinatesConverter(coordinates));
+                        takeCoordinates = false;
+                    }
+                } else {
+                    System.out.println();
+                    System.out.println("Coordinates out of map! Try again: ");
+                    System.out.println();
+                }
+            } else {
+                System.out.println();
+                System.out.println("Error! Wrong format! Try again: ");
+                System.out.println();
             }
         }
     }
@@ -105,40 +117,24 @@ public class Main {
     }
 
     private static int[] coordinatesConverter(String[] coordinates){
-            try {
-                int one = coordinates[0].charAt(0) - 65;
-                String second = coordinates[0].substring(1);
-                int two = Integer.parseInt(second) - 1;
-                int three = coordinates[1].charAt(0) - 65;
-                String fourth = coordinates[1].substring(1);
-                int four = Integer.parseInt(fourth) - 1;
+        try {
+            int one = coordinates[0].charAt(0) - 65;
+            String second = coordinates[0].substring(1);
+            int two = Integer.parseInt(second) - 1;
+            int three = coordinates[1].charAt(0) - 65;
+            String fourth = coordinates[1].substring(1);
+            int four = Integer.parseInt(fourth) - 1;
 
 
-                return new int[]{Math.min(one, three), Math.min(two, four), Math.max(one, three), Math.max(two, four)};
-            } catch (Exception e) {
-                return new int[]{};
-            }
-        }
-
-
-    private static boolean coordinatesValues(int[] coordinatesConverter) {
-        int a = 0;
-        for (int i = 0; i <= 3; i++) {
-            if (coordinatesConverter[i] >= 0 && coordinatesConverter[i] <= 9) {
-               System.out.println(coordinatesConverter[i]);
-                a+= 1;
-            }
-        }
-
-        if (a == 4) {
-            return true;
-        } else {
-            System.out.println("Error inside coordinatesValues");
-            return false;
+            return new int[]{Math.min(one, three), Math.min(two, four), Math.max(one, three), Math.max(two, four)};
+        } catch (Exception e) {
+            return new int[]{};
         }
     }
 
-    public static boolean rangePossible(Ship ship, int[] coordinatesConverter){
+
+
+    private static boolean rangePossible(Ship ship, int[] coordinatesConverter){
         int a = coordinatesConverter[0];
         int b = coordinatesConverter[1];
         int c = coordinatesConverter[2];
@@ -165,7 +161,7 @@ public class Main {
         }
     }
 
-    public static boolean shipAround(int[] coordinatesConverter) {
+    private static boolean shipAround(int[] coordinatesConverter) {
         boolean a = false;
 
         if (coordinatesConverter[0] == 0 && coordinatesConverter[1] == 0) {
@@ -257,7 +253,21 @@ public class Main {
             System.out.println();
         }
         return a;
+    }
+
+    private static boolean range(int[] coordinatesConverter) {
+        for (int number : coordinatesConverter) {
+            if (number < 0 || number > 9)
+                return false;
         }
+        return true;
+    }
+
+    private static void game() {
+        System.out.println("The game starts!");
+        displayPlane();
+
+    }
 
     public static void main(String[] args) {
         // Write your code here
@@ -266,3 +276,4 @@ public class Main {
         setShips();
     }
 }
+
