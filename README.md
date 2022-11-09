@@ -1,4 +1,4 @@
-# Battleship Final code of Project with stages:open_book::computer::computer_mouse:
+# Battleship Final code of Project with stages:open_book::computer::ship:
 
 ### Stage :one:<br />
 Review the rules and place your ships on the game field.
